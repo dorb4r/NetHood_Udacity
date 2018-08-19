@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^1.5.0",
+    "@material-ui/icons": "^2.0.2",
     "bulma": "^0.7.1",
     "bulma-extensions": "^2.2.1",
     "moment": "^2.22.2",
