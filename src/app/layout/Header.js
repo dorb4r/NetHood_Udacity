@@ -37,7 +37,7 @@ class Header extends React.Component {
   render() {
     return (
       <div style={this.styles.root}>
-        <AppBar position="static" color="default">
+        <AppBar position="absolute" color="default">
           <Toolbar>
             <IconButton style={this.styles.menuButton}  color="inherit" aria-label="Menu">
               <MenuIcon />
