@@ -32,12 +32,16 @@ class Header extends React.Component {
       marginLeft: -12,
       marginRight: 20,
     },
+    appBar: {
+      position: 'absolute',
+      width: `calc(100% - 240px)`, 
+    }
   };
 
   render() {
     return (
       <div style={this.styles.root}>
-        <AppBar position="absolute" color="default">
+        <AppBar style={this.styles.appBar}  position="absolute" color="default">
           <Toolbar>
             <IconButton style={this.styles.menuButton}  color="inherit" aria-label="Menu">
               <MenuIcon />
