@@ -76,48 +76,36 @@ const styles = theme => ({
       padding: theme.spacing.unit * 3,
     },
   });
-
 class Home extends Component { 
     state = {
-        open: false,
-      };
-    
-      handleDrawerOpen = () => {
-        this.setState({ open: true });
-      };
-    
-      handleDrawerClose = () => {
-        this.setState({ open: false });
+        open: true,
       };
 
       names = ["Dor", "Danielle", "Noam", "Aviv", "Amir", "Yaron", "Yoav"]
 
 
     render (){
+    
         const { classes, theme } = this.props
         return(
             <div>
                 <Drower variant="permanent"
-                        className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
-                        open={this.state.open}>
+          classes={{
+            paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+          }}
+          open={this.state.open}>
                     <div className={classes.toolbar}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                        </IconButton>
+                        
                     </div>
                     <Divider />
                     {this.names.map((name) => (
-                        <Card className={classes.menuButton}>
-                            <Button>
-                                {name} is one of the best
-                            </Button>
-                        </Card>
+                        <Button key={name}>
+                                {name} 
+                        </Button>
                     ))}
-                    
-                    
 
                 </Drower>
             </div>
     )}
 }
-export default withStyles(styles, { withTheme: true })(Home)
+export default withStyles(styles, {withTheme: true})(Home)
