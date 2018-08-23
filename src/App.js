@@ -1,77 +1,96 @@
 import React, { Component } from 'react';
-import Layout from './app/Layout';
-import './App.css';
+import PropTypes from 'prop-types';
 
-import AppBar from '@material-ui/core/AppBar'
-import { Toolbar, Typography, Drawer, Divider } from '@material-ui/core';
-import {withStyles} from '@material-ui/core/styles'
-import classnames from 'classnames';
+import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import { Button } from '@material-ui/core';
+import MapComp from './app/MapComp';
 
-const drawerWidth = 240;
+
+const drawerWidth = 240,
+      API_KEY = "AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI";
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-  },
-  appFrame: {
-    height: 440,
+    height: "100%",
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
     display: 'flex',
-    width: '100%',
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-  },
-  'appBar-left': {
-    marginLeft: drawerWidth,
-  },
-  'appBar-right': {
-    marginRight: drawerWidth,
+    zIndex: theme.zIndex.drawer + 1,
   },
   drawerPaper: {
     position: 'relative',
     width: drawerWidth,
   },
-  toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
+    minWidth: 0, // So the Typography noWrap works
   },
+  toolbar: theme.mixins.toolbar,
 });
 
-
-class App extends Component {
+class ClippedDrawer extends Component {
   state = {
+    locations: []
+  }
 
+  componentDidMount() {
+    fetch("https://api.tomtom.com/search/2/search/sports.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data.results)
+      this.setState({locations: data.results})
+    })
+    .catch((err) =>
+      console.log(err)
+    )
   }
 
   render() {
-    const { classes, theme } = this.props
+    const { classes } = this.props;
     return (
       <div className={classes.root}>
-        <AppBar 
-        className={classnames(classes.appBar, classes[`appBar-left`])}>
+        <AppBar position="absolute" className={classes.appBar}>
           <Toolbar>
-            <Typography
-              variant="title"
-              color="inherit">
+            <Typography variant="title" color="inherit" noWrap>
               NetHood
             </Typography>
           </Toolbar>
         </AppBar>
         <Drawer
-          classes={{paper: classes.drawerPaper}}
-          variant="permanent">
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
           <div className={classes.toolbar} />
-          <Divider />
-
+          <Button>Dor Bar</Button>
+          {this.state.locations.map((location) => (
+            <Button key={location.id}>{location.poi.name}</Button>
+          ))}
         </Drawer>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <MapComp apiKey={API_KEY}/>
+        </main>
       </div>
     );
   }
 }
 
-export default withStyles(styles, {withTheme: true})(App);
+ClippedDrawer.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(ClippedDrawer);
