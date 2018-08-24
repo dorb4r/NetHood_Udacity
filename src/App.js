@@ -8,7 +8,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import { Button } from '@material-ui/core';
+import { Button, Input } from '@material-ui/core';
 import MapComp from './app/MapComp';
 
 
@@ -42,7 +42,24 @@ const styles = theme => ({
 
 class ClippedDrawer extends Component {
   state = {
-    locations: []
+    locations: [],
+    query: ""
+  }
+
+  searchLocations(query) {
+    this.setState({ query });
+
+    if (query !== "")
+      fetch(`https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.results)
+          this.setState({locations: data.results})
+        })
+        .catch((err) =>
+          console.log(err)
+        )
+    else this.setState({locations: []})
   }
 
   componentDidMount() {
@@ -75,10 +92,12 @@ class ClippedDrawer extends Component {
           }}
         >
           <div className={classes.toolbar} />
-          <Button>Dor Bar</Button>
-          {this.state.locations.map((location) => (
-            <Button key={location.id}>{location.poi.name}</Button>
-          ))}
+          <Input type="text" 
+                  onChange={(value) => this.searchLocations(value.target.value)}/>
+          {this.state.locations.map((location) => {
+            if(location.type === "POI")
+            return (<Button key={location.id}>{location.poi.name}</Button>);
+          })}
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
