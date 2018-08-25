@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import escapeRegExp from 'escape-string-regexp'
 
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -84,6 +85,19 @@ class ClippedDrawer extends Component {
 
   render() {
     const { classes } = this.props;
+    const { locations, query } = this.state;
+
+    let showingLocations
+
+    if (query) {
+        const match = new RegExp(escapeRegExp(query), 'i');
+        showingLocations = locations.filter((location) => match.test(location.poi.name));
+    } else {
+      showingLocations = locations;
+    }
+
+    console.log(showingLocations)
+
     return (
       <div className={classes.root}>
         <AppBar position="absolute" className={classes.appBar}>
@@ -108,9 +122,9 @@ class ClippedDrawer extends Component {
         >
           <div className={classes.toolbar} />
           <Input type="text" 
-                  onChange={(value) => this.searchLocations(value.target.value)}/>
+                  onChange={(value) => this.filterLocations(value.target.value)}/>
           <Divider />
-          {this.state.locations.map((location) => {
+          {showingLocations.map((location) => {
             if(location.type === "POI")
             return (<Button key={location.id}>{location.poi.name}</Button>);
           })}
