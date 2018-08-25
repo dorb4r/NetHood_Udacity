@@ -25,6 +25,9 @@ const styles = theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    display: "flex",
+    justifyContent: "space-between",
+    flexGrow: 1,
   },
   drawerPaper: {
     position: 'relative',
@@ -36,6 +39,9 @@ const styles = theme => ({
     padding: 0,
     minWidth: 0, // So the Typography noWrap works
   },
+  flex: {
+    flexGrow: 1,
+  },
   toolbar: theme.mixins.toolbar,
 });
 
@@ -45,9 +51,11 @@ class ClippedDrawer extends Component {
     query: ""
   }
 
-  searchLocations(query) {
+  filterLocations(query) {
     this.setState({ query });
+  }
 
+  searchLocations(query) {
     if (query !== "")
       fetch(`https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000`)
         .then((res) => res.json())
@@ -73,15 +81,23 @@ class ClippedDrawer extends Component {
     )
   }
 
+
   render() {
     const { classes } = this.props;
     return (
       <div className={classes.root}>
         <AppBar position="absolute" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="title" color="inherit" noWrap>
+          <Toolbar className={classes.appBar}>
+            <Typography variant="title" color="inherit" noWrap className={classes.flex}>
               NetHood
             </Typography>
+            <form noWrap onSubmit={(e) => {e.preventDefault(); this.searchLocations(e.target.querySelector("#searchLocations").value)}}>
+              <Typography variant="subheading" color="inherit">
+                <label>Load other locations:</label>
+              </Typography>
+              <Input type="text" id="searchLocations" />
+              <Input type="submit" color="inherit" value="load"/>
+            </form>
           </Toolbar>
         </AppBar>
         <Drawer
