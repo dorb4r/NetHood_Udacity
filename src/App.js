@@ -5,7 +5,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import { Button, Input } from '@material-ui/core';
@@ -94,6 +93,7 @@ class ClippedDrawer extends Component {
           <div className={classes.toolbar} />
           <Input type="text" 
                   onChange={(value) => this.searchLocations(value.target.value)}/>
+          <Divider />
           {this.state.locations.map((location) => {
             if(location.type === "POI")
             return (<Button key={location.id}>{location.poi.name}</Button>);
@@ -101,7 +101,9 @@ class ClippedDrawer extends Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <MapComp apiKey={API_KEY}/>
+          <MapComp apiKey={API_KEY}
+                   isMarkerShown={true}
+                   markers={this.state.locations}/>
         </main>
       </div>
     );
