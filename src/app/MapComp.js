@@ -1,3 +1,5 @@
+/*global google*/
+
 import React from "react"
 import {
     compose,
@@ -7,7 +9,8 @@ import {
     withScriptjs,
     withGoogleMap,
     GoogleMap,
-    Marker
+    Marker,
+    InfoWindow
 } from "react-google-maps"
 
 const lat = 32.1500,
@@ -70,17 +73,26 @@ const MapComp = compose(
     }),
     withScriptjs,
     withGoogleMap)((props) => {
+        var markerPin = {
+            url: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
+            scaledSize: new google.maps.Size(42, 43)
+        };
         return (<GoogleMap styles={styles.mapContainer}
             defaultZoom = {14}
             defaultCenter = {{lat: lat, lng: lng}}>
-            {/* <Marker position={{lat: lat, lng: lng}}
-                    onClick = {props.onMarkerClick}/> */}
+
             {props.markers.map((marker) => {
                 console.log(marker.position.lng);
-                return (<Marker key={marker.id} position={{lat: marker.position.lat, lng: marker.position.lon}}
-                    onClick = {props.onMarkerClick}/>)
-            }
-                
+                return (<Marker defaultIcon={markerPin}
+                                key={marker.id} 
+                                position={{lat: marker.position.lat, lng: marker.position.lon}}
+                                onClick = {props.onToggleOpen(marker.id)}>
+                            {props.isOpen[marker.id] && 
+                            <InfoWindow onCloseClick={props.closeWindows}>
+                                <p>Dor Bar</p>
+                            </InfoWindow>}
+                        </Marker>)
+                }   
            )}
     </GoogleMap>)
     }
