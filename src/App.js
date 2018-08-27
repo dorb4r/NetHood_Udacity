@@ -87,9 +87,10 @@ class Home extends Component {
         this.setState({isOpen});
     };
 
-    closeWindows = () => {
-        console.log("Close ALL!")
-        // this.setState({ isOpen: {}})
+    closeWindows = (id) => {
+      const isOpen = this.state.isOpen;
+      delete isOpen[id]
+      this.setState({isOpen});
     };
 
 
@@ -130,24 +131,20 @@ class Home extends Component {
                         </form>
                     </Toolbar>
                 </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
+                <Drawer variant="permanent"
+                        classes={{paper: classes.drawerPaper,}}>
                     <div className={classes.toolbar}/>
                     <Input type="text"
                            onChange={(value) => this.filterLocations(value.target.value)}/>
                     <Divider/>
                     <List>
                     {showingLocations.filter((location) => location.type === "POI")
-                      .map((location) =>
-                        (<ListItem >
-                          <MenuItem selected={this.state.isOpen[location.id]}>
-                            <Button key={location.id}>{location.poi.name}</Button>
+                      .map((location) => (
+                          <MenuItem key={location.id} 
+                                    selected={this.state.isOpen[location.id]}>
+                            <Button>{location.poi.name}</Button>
                           </MenuItem>
-                        </ListItem>)
+                        )
                     )}
                     </List>
                 </Drawer>

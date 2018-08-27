@@ -35,37 +35,35 @@ const MapComp = compose(
             url: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
             scaledSize: new google.maps.Size(42, 43)
         };
-        console.log(props.isOpen);
+        console.log("MAP COMP", props.isOpen);
         return (
             <GoogleMap styles={styles.mapContainer}
                        defaultZoom={14}
                        defaultCenter={{lat: lat, lng: lng}}>
-
                 {props.markers.filter((location) => location.type === "POI")
                     .map((marker) => {
-                        console.log(marker.position.lng);
-                        if (props.isMarkerShown) {
-                            return (
+                        return (
                             <Marker defaultIcon={markerPin}
-                                        key={marker.id}
-                                        position={{lat: marker.position.lat, lng: marker.position.lon}}
-                                        onClick={() => props.onMarkerClick(marker.id)}>
-                            {props.isOpen[marker.id] && (
-                                <InfoWindow onCloseClick={props.closeWindows}>
-                                    <p>Dor Bar</p>
-                                </InfoWindow>)}
+                                    key={marker.id}
+                                    position={{lat: marker.position.lat, lng: marker.position.lon}}
+                                    onClick={() => props.onMarkerClick(marker.id)}>
+                                {props.isOpen[marker.id] && (
+                                    <InfoWindow onCloseClick={() => props.closeWindows(marker.id)}>
+                                        <p>Dor Bar</p>
+                                    </InfoWindow>)}
                             </Marker>
-                        )}
+                        )
                     }
                 )}
-            </GoogleMap>)
+            </GoogleMap>
+        )
     }
 );
 
 class MyFancyComponent extends React.PureComponent {
     state = {
         isMarkerShown: false,
-        isOpen: this.props.isOpen
+        isOpen: {}
     };
 
     componentDidMount() {
@@ -77,28 +75,37 @@ class MyFancyComponent extends React.PureComponent {
             this.setState({
                 isMarkerShown: true
             })
-        }, 1000)
+        }, 10)
     }
 
     handleMarkerClick = (id) => {
-        console.log(this.state.isOpen)
-        this.props.onToggleOpen(id)
+        console.log(id + " is open")
         const isOpen = this.state.isOpen
-        isOpen[id] = true;
-        this.setState({
-            isMarkerShown: false, 
-            isOpen: isOpen
-        })
+        isOpen[id] = true
+        console.log("isOpen", isOpen)
+        this.setState({ isMarkerShown: false, isOpen: isOpen })
+        console.log(this)
+        console.log("state.isOpen", this.state.isOpen)
+        this.props.onToggleOpen(id)
         this.delayedShowMarker()
     }
 
+    handleInfoWindowClose = (id) => {
+        console.log(id + " is closed")
+        const isOpen = this.state.isOpen;
+        delete isOpen[id]
+        this.setState({isOpen})
+        this.props.closeWindows(id)
+    }
+
     render() {
+        console.log("MAP COMP FANCY", this.props.isOpen);
         return (<MapComp isMarkerShown={this.state.isMarkerShown}
                          onMarkerClick={this.handleMarkerClick}
                          markers={this.props.markers}
-                         isOpen={this.props.isOpen}
+                         isOpen={this.state.isOpen}
                          onToggleOpen={this.props.onToggleOpen}
-                         closeWindows={this.props.closeWindows}
+                         closeWindows={this.handleInfoWindowClose}
             />
         )
     }
