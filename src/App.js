@@ -8,7 +8,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import {Button, Input} from '@material-ui/core';
+import {Button, Input, Menu, MenuItem, List, ListItem} from '@material-ui/core';
 
 import MapComp from './app/MapComp';
 import MyFancyComponent from './app/MapComp';
@@ -48,13 +48,14 @@ const styles = theme => ({
     toolbar: theme.mixins.toolbar,
 });
 
-class ClippedDrawer extends Component {
+class Home extends Component {
     constructor() {
         super();
         this.state = {
-            locations: [],
-            query: "",
-            isOpen: {}
+          isMarkerShown: true,
+          locations: [],
+          query: "",
+          isOpen: {}
         }
 
         this.onToggleOpen = this.onToggleOpen.bind(this);
@@ -110,8 +111,6 @@ class ClippedDrawer extends Component {
             showingLocations = locations;
         }
 
-        // console.log(showingLocations)
-
         return (
             <div className={classes.root}>
                 <AppBar position="absolute" className={classes.appBar}>
@@ -141,14 +140,21 @@ class ClippedDrawer extends Component {
                     <Input type="text"
                            onChange={(value) => this.filterLocations(value.target.value)}/>
                     <Divider/>
-                    {showingLocations.filter((location) => location.type === "POI").map((location) =>
-                        (<Button key={location.id}>{location.poi.name}</Button>)
+                    <List>
+                    {showingLocations.filter((location) => location.type === "POI")
+                      .map((location) =>
+                        (<ListItem >
+                          <MenuItem selected={this.state.isOpen[location.id]}>
+                            <Button key={location.id}>{location.poi.name}</Button>
+                          </MenuItem>
+                        </ListItem>)
                     )}
+                    </List>
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    <MyFancyComponent apiKey={API_KEY}
-                             isMarkerShown={true}
+                    <MyFancyComponent 
+                             isMarkerShown={this.state.isMarkerShown}
                              markers={this.state.locations}
                              isOpen={this.state.isOpen}
                              onToggleOpen={this.onToggleOpen}
@@ -159,8 +165,8 @@ class ClippedDrawer extends Component {
     }
 }
 
-ClippedDrawer.propTypes = {
+Home.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ClippedDrawer);
+export default withStyles(styles)(Home);

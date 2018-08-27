@@ -49,7 +49,7 @@ const MapComp = compose(
                             <Marker defaultIcon={markerPin}
                                         key={marker.id}
                                         position={{lat: marker.position.lat, lng: marker.position.lon}}
-                                        onClick={(e) => props.onToggleOpen(marker.id)}>
+                                        onClick={() => props.onMarkerClick(marker.id)}>
                             {props.isOpen[marker.id] && (
                                 <InfoWindow onCloseClick={props.closeWindows}>
                                     <p>Dor Bar</p>
@@ -65,6 +65,7 @@ const MapComp = compose(
 class MyFancyComponent extends React.PureComponent {
     state = {
         isMarkerShown: false,
+        isOpen: this.props.isOpen
     };
 
     componentDidMount() {
@@ -76,12 +77,17 @@ class MyFancyComponent extends React.PureComponent {
             this.setState({
                 isMarkerShown: true
             })
-        }, 3000)
+        }, 1000)
     }
 
-    handleMarkerClick = () => {
+    handleMarkerClick = (id) => {
+        console.log(this.state.isOpen)
+        this.props.onToggleOpen(id)
+        const isOpen = this.state.isOpen
+        isOpen[id] = true;
         this.setState({
-            isMarkerShown: false
+            isMarkerShown: false, 
+            isOpen: isOpen
         })
         this.delayedShowMarker()
     }
