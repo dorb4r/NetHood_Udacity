@@ -9,3 +9,6 @@ The app focused on sports events. So if you want to find some friends to play so
 Simply run:
 * npm install.
 * npm start.
+
+### Author
+Dor Bar - Web Developer
