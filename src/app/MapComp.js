@@ -35,21 +35,22 @@ const MapComp = compose(
             url: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
             scaledSize: new google.maps.Size(42, 43)
         };
-        console.log("MAP COMP", props.isOpen);
         return (
             <GoogleMap styles={styles.mapContainer}
                        defaultZoom={14}
                        defaultCenter={{lat: lat, lng: lng}}>
-                {props.markers.filter((location) => location.type === "POI")
-                    .map((marker) => {
+                {props.markers.map((marker) => {
                         return (
                             <Marker defaultIcon={markerPin}
-                                    key={marker.id}
-                                    position={{lat: marker.position.lat, lng: marker.position.lon}}
-                                    onClick={() => props.onMarkerClick(marker.id)}>
-                                {props.isOpen[marker.id] && (
-                                    <InfoWindow onCloseClick={() => props.closeWindows(marker.id)}>
-                                        <p>Dor Bar</p>
+                                    key={marker.venue.id}
+                                    position={{lat: marker.venue.location.lat, lng: marker.venue.location.lng}}
+                                    onClick={() => props.onMarkerClick(marker.venue.id)}>
+                                {props.isOpen[marker.venue.id] && (
+                                    <InfoWindow onCloseClick={() => props.closeWindows(marker.venue.id)}>
+                                        <p>{marker.venue.name}</p>
+                                        {/* {marker.venue.photos.count > 0 && (
+                                            <img src={marker.venue.photos.groups[0]}></img>
+                                        )} */}
                                     </InfoWindow>)}
                             </Marker>
                         )
@@ -79,13 +80,9 @@ class MyFancyComponent extends React.PureComponent {
     }
 
     handleMarkerClick = (id) => {
-        console.log(id + " is open")
         const isOpen = this.state.isOpen
         isOpen[id] = true
-        console.log("isOpen", isOpen)
         this.setState({ isMarkerShown: false, isOpen: isOpen })
-        console.log(this)
-        console.log("state.isOpen", this.state.isOpen)
         this.props.onToggleOpen(id)
         this.delayedShowMarker()
     }

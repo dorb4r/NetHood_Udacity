@@ -14,7 +14,7 @@ import MapComp from './app/MapComp';
 import MyFancyComponent from './app/MapComp';
 
 
-const drawerWidth = 240,
+const drawerWidth = 340,
     API_KEY = "AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI";
 
 const styles = theme => ({
@@ -68,10 +68,12 @@ class Home extends Component {
 
     searchLocations(query) {
         if (query !== "")
-            fetch(`https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000`)
+            fetch(`https://api.foursquare.com/v2/venues/explore?client_id=D3TYG0N52G2CCG15S0W1KVOSFTL13PFSBNTNSWYQWHEB03U1&client_secret=ZAUNBOXE2CKX0KJ1FT5XBF55ENZ4YA2WTDPZE2W2P3ZQBBT5&v=20180323&limit=1000&ll=32.1500,34.8839&query=${query}`)
+            // https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000
                 .then((res) => res.json())
                 .then((data) => {
-                    this.setState({locations: data.results})
+                  console.log(data.response.groups[0].items)
+                  this.setState({locations: data.response.groups[0].items})  
                 })
                 .catch((err) => {
                         console.log(err);
@@ -138,11 +140,16 @@ class Home extends Component {
                            onChange={(value) => this.filterLocations(value.target.value)}/>
                     <Divider/>
                     <List>
-                    {showingLocations.filter((location) => location.type === "POI")
+                    {showingLocations
                       .map((location) => (
-                          <MenuItem key={location.id} 
-                                    selected={this.state.isOpen[location.id]}>
-                            <Button>{location.poi.name}</Button>
+                          <MenuItem key={location.venue.id} 
+                                    selected={this.state.isOpen[location.venue.id]}
+                                    style={{whiteSpace: 'normal', textAlign: "center"}}>
+                            <Button className={classes.flex}>
+                              <Typography variant="button">
+                                {location.venue.name}
+                              </Typography>
+                            </Button>
                           </MenuItem>
                         )
                     )}
