@@ -37,7 +37,7 @@ const MapComp = compose(
         };
         return (
             <GoogleMap styles={styles.mapContainer}
-                       defaultZoom={14}
+                       defaultZoom={11}
                        defaultCenter={{lat: lat, lng: lng}}>
                 {props.markers.map((marker) => {
                         return (
@@ -47,10 +47,13 @@ const MapComp = compose(
                                     onClick={() => props.onMarkerClick(marker.venue.id)}>
                                 {props.isOpen[marker.venue.id] && (
                                     <InfoWindow onCloseClick={() => props.closeWindows(marker.venue.id)}>
-                                        <p>{marker.venue.name}</p>
-                                        {/* {marker.venue.photos.count > 0 && (
-                                            <img src={marker.venue.photos.groups[0]}></img>
-                                        )} */}
+                                        <div>
+                                            <p>{marker.venue.name}</p>
+                                            {marker.venue.photos.count > 0 && (
+                                                <img src={marker.venue.photos.groups[0]}></img>
+                                            )}
+                                        </div>
+                                        
                                     </InfoWindow>)}
                             </Marker>
                         )
@@ -88,7 +91,7 @@ class MyFancyComponent extends React.PureComponent {
     }
 
     handleInfoWindowClose = (id) => {
-        console.log(id + " is closed")
+        
         const isOpen = this.state.isOpen;
         delete isOpen[id]
         this.setState({isOpen})
@@ -96,7 +99,6 @@ class MyFancyComponent extends React.PureComponent {
     }
 
     render() {
-        console.log("MAP COMP FANCY", this.props.isOpen);
         return (<MapComp isMarkerShown={this.state.isMarkerShown}
                          onMarkerClick={this.handleMarkerClick}
                          markers={this.props.markers}
