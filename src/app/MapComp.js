@@ -65,7 +65,7 @@ const MapComp = compose(
                                                 Category: <strong>{marker.venue.categories[0].name}</strong>
                                             </p>
                                             {marker.venue.photos.count > 0 && (
-                                                <img src={marker.venue.photos.groups[0]} />
+                                                <img src={marker.venue.photos.groups[0].url} alt={marker.venue.photos.groups[0].alt}/>
                                             )}
                                         </div>
 
@@ -82,7 +82,7 @@ const MapComp = compose(
 class MyFancyComponent extends React.PureComponent {
     state = {
         isMarkerShown: false,
-        isOpen: {}
+        isOpen: this.props.isOpen
     };
 
     componentDidMount() {
@@ -100,7 +100,7 @@ class MyFancyComponent extends React.PureComponent {
     handleMarkerClick = (id) => {
         const isOpen = this.state.isOpen;
         isOpen[id] = true;
-        this.setState({isMarkerShown: false, isOpen: isOpen});
+        this.setState({isMarkerShown: false});
         this.props.onToggleOpen(id);
         this.delayedShowMarker()
     };
@@ -117,7 +117,7 @@ class MyFancyComponent extends React.PureComponent {
         return (<MapComp isMarkerShown={this.state.isMarkerShown}
                          onMarkerClick={this.handleMarkerClick}
                          markers={this.props.markers}
-                         isOpen={this.state.isOpen}
+                         isOpen={this.props.isOpen}
                          onToggleOpen={this.props.onToggleOpen}
                          closeWindows={this.handleInfoWindowClose}
                          filterQuery={this.props.filterQuery}
