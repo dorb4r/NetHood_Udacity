@@ -10,9 +10,8 @@ const lat = 32.1500,
 
 const styles = {
     mapContainer: {
-        height: "calc(100% - 64px)",
+        // height: "calc(100% - 64px)",
         padding: 0,
-
     }
 };
 

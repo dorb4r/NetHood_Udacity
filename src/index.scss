@@ -14,8 +14,6 @@ $colors: map-merge($colors, $addColors);
 
 
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+body, html, #root {
+  height: 100%;
 }

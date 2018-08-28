@@ -6,9 +6,11 @@ import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-  import Typography from '@material-ui/core/Typography';
-import {Button, Input, MenuItem, List} from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import {Button, Input, MenuItem, List, Hidden} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 
 import MyFancyComponent from './app/MapComp';
 
@@ -23,6 +25,7 @@ const styles = theme => ({
         overflow: 'hidden',
         position: 'relative',
         display: 'flex',
+        width: '100%',
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
@@ -47,15 +50,15 @@ const styles = theme => ({
       overflowY: "scroll"
     },
     filterInput: {
-        height: "35px",
+        height: "100px",
         lineHeight: "2",
-        marginTop: "15px"
+        marginTop: "20px"
     },
     locationForm: {
       color: "#000",
       background: "rgba(255,255,255, 0.3)",
       borderRadius: "10px",
-      padding: "2px 10px",
+      padding: "0 10px",
     },
     input: {
       color: "#eee"
@@ -68,9 +71,10 @@ class Home extends Component {
         super(props);
         this.state = {
             isMarkerShown: true,
+            mobileOpen: false,
             locations: [],
             query: "",
-            isOpen: ""
+            isOpen: "",
         };
 
         this.onToggleOpen = this.onToggleOpen.bind(this);
@@ -110,10 +114,14 @@ class Home extends Component {
         this.searchLocations("sports");
     }
 
+    handleDrawerToggle = () => {
+      this.setState(state => ({ mobileOpen: !state.mobileOpen }));
+    };
+
 
     render() {
-        const {classes} = this.props;
-        const {locations, query} = this.state;
+      const {classes} = this.props;
+      const {locations, query} = this.state;       
 
         let showingLocations;
 
@@ -124,51 +132,88 @@ class Home extends Component {
             showingLocations = locations;
         }
 
+        const drawer = (
+          <List className={classes.locationList}>
+              {showingLocations
+                  .map((location) => (
+                          <MenuItem key={location.venue.id}
+                                    selected={this.state.isOpen[location.venue.id]}
+                                    style={{whiteSpace: 'normal', textAlign: "center"}}>
+                              <Button className={classes.flex}
+                                      onClick={() => this.onToggleOpen(location.venue.id)}>
+                                  <Typography variant="button">
+                                      {location.venue.name}
+                                  </Typography>
+                              </Button>
+                          </MenuItem>
+                      )
+                  )}
+          </List>)
+
+          const loadLocations = (
+            <form className={classes.locationForm}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    this.searchLocations(e.target.querySelector("#searchLocations").value)}}>
+                <Typography variant="subheading" color="inherit">
+                    <label>Load other locations:</label>
+                </Typography>
+                <Input className={classes.input} type="text" id="searchLocations" color="#fff"/>
+                <Input type="submit" value="load"/>
+            </form>
+          )
+
         return (
             <div className={classes.root}>
                 <AppBar position="absolute" className={classes.appBar}>
                     <Toolbar className={classes.appBar}>
+                    <IconButton
+                      color="inherit"
+                      aria-label="Open drawer"
+                      onClick={this.handleDrawerToggle}
+                      className={classes.navIconHide}
+                    >
+                      <MenuIcon />
+                    </IconButton>
                         <Typography variant="title" color="inherit" noWrap className={classes.flex}>
                             NetHood
                         </Typography>
-                        <form className={classes.locationForm}
-                              onSubmit={(e) => {
-                                e.preventDefault();
-                                this.searchLocations(e.target.querySelector("#searchLocations").value)}}>
-                            <Typography variant="subheading" color="inherit">
-                                <label>Load other locations:</label>
-                            </Typography>
-                            <Input className={classes.input} type="text" id="searchLocations" color="#fff"/>
-                            <Input type="submit" value="load"/>
-                        </form>
+                        <Hidden smDown>
+                          {loadLocations}
+                        </Hidden>
                     </Toolbar>
                 </AppBar>
+                <Hidden smDown>
                 <Drawer variant="permanent"
-                        classes={{paper: classes.drawerPaper,}}>
-                    <div className={classes.toolbar}/>
-                    <TextField
-                           onChange={(value) => this.filterLocations(value.target.value)}
-                           className={classes.filterInput}
-                           placeholder="Filter Locations"/>
-                    <List className={classes.locationList}>
-                        {showingLocations
-                            .map((location) => (
-                                    <MenuItem key={location.venue.id}
-                                              selected={this.state.isOpen[location.venue.id]}
-                                              style={{whiteSpace: 'normal', textAlign: "center"}}>
-                                        <Button className={classes.flex}
-                                                onClick={() => this.onToggleOpen(location.venue.id)}>
-                                            <Typography variant="button">
-                                                {location.venue.name}
-                                            </Typography>
-                                        </Button>
-                                    </MenuItem>
-                                )
-                            )}
-                    </List>
+                        classes={{paper: classes.drawerPaper, }}>
+                        <div className={classes.toolbar}/>
+                  <TextField
+                    onChange={(value) => this.filterLocations(value.target.value)}
+                    className={classes.filterInput}
+                    placeholder="Filter Locations"/>
+                    {drawer}
                 </Drawer>
+                </Hidden>
+                <Hidden mdUp>
+                <Drawer variant="temporary"
+                        anchor={'left'}
+                        open={this.state.mobileOpen}
+                        onClose={this.handleDrawerToggle}
+                        classes={{paper: classes.drawerPaper, }}
+                        ModalProps={{
+                          keepMounted: true, // Better open performance on mobile.
+                        }}>
+                  {loadLocations}
+                  <TextField
+                    onChange={(value) => this.filterLocations(value.target.value)}
+                    className={classes.filterInput}
+                    placeholder="Filter Locations"/>
+                    {drawer}
+                </Drawer>
+                </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
+                    <div style={{height: "100%", width: "100%"}}>
                     <MyFancyComponent
                         isMarkerShown={this.state.isMarkerShown}
                         markers={this.state.locations}
@@ -176,6 +221,7 @@ class Home extends Component {
                         onToggleOpen={this.onToggleOpen}
                         closeWindows={this.closeWindows}
                         filterQuery={this.state.query}/>
+                    </div>
                 </main>
             </div>
         );
