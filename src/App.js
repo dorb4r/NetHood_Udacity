@@ -45,6 +45,10 @@ const styles = theme => ({
     flex: {
         flexGrow: 1,
     },
+    locationList: {
+        overflowY: "scroll"
+
+    },
     toolbar: theme.mixins.toolbar,
 });
 
@@ -52,11 +56,11 @@ class Home extends Component {
     constructor() {
         super();
         this.state = {
-          isMarkerShown: true,
-          locations: [],
-          query: "",
-          isOpen: {}
-        }
+            isMarkerShown: true,
+            locations: [],
+            query: "",
+            isOpen: {}
+        };
 
         this.onToggleOpen = this.onToggleOpen.bind(this);
         this.closeWindows = this.closeWindows.bind(this);
@@ -72,8 +76,8 @@ class Home extends Component {
             // https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000
                 .then((res) => res.json())
                 .then((data) => {
-                  console.log(data.response.groups[0].items)
-                  this.setState({locations: data.response.groups[0].items})  
+                    console.log(data.response.groups[0].items)
+                    this.setState({locations: data.response.groups[0].items})
                 })
                 .catch((err) => {
                         console.log(err);
@@ -90,9 +94,9 @@ class Home extends Component {
     };
 
     closeWindows = (id) => {
-      const isOpen = this.state.isOpen;
-      delete isOpen[id]
-      this.setState({isOpen});
+        const isOpen = this.state.isOpen;
+        delete isOpen[id];
+        this.setState({isOpen});
     };
 
 
@@ -105,11 +109,11 @@ class Home extends Component {
         const {classes} = this.props;
         const {locations, query} = this.state;
 
-        let showingLocations
+        let showingLocations;
 
         if (query) {
             const match = new RegExp(escapeRegExp(query), 'i');
-            showingLocations = locations.filter((location) => match.test(location.poi.name));
+            showingLocations = locations.filter((location) => match.test(location.venue.name));
         } else {
             showingLocations = locations;
         }
@@ -139,30 +143,31 @@ class Home extends Component {
                     <Input type="text"
                            onChange={(value) => this.filterLocations(value.target.value)}/>
                     <Divider/>
-                    <List>
-                    {showingLocations
-                      .map((location) => (
-                          <MenuItem key={location.venue.id} 
-                                    selected={this.state.isOpen[location.venue.id]}
-                                    style={{whiteSpace: 'normal', textAlign: "center"}}>
-                            <Button className={classes.flex}>
-                              <Typography variant="button">
-                                {location.venue.name}
-                              </Typography>
-                            </Button>
-                          </MenuItem>
-                        )
-                    )}
+                    <List className={classes.locationList}>
+                        {showingLocations
+                            .map((location) => (
+                                    <MenuItem key={location.venue.id}
+                                              selected={this.state.isOpen[location.venue.id]}
+                                              style={{whiteSpace: 'normal', textAlign: "center"}}>
+                                        <Button className={classes.flex}>
+                                            <Typography variant="button">
+                                                {location.venue.name}
+                                            </Typography>
+                                        </Button>
+                                    </MenuItem>
+                                )
+                            )}
                     </List>
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    <MyFancyComponent 
-                             isMarkerShown={this.state.isMarkerShown}
-                             markers={this.state.locations}
-                             isOpen={this.state.isOpen}
-                             onToggleOpen={this.onToggleOpen}
-                             closeWindows={this.closeWindows}/>
+                    <MyFancyComponent
+                        isMarkerShown={this.state.isMarkerShown}
+                        markers={this.state.locations}
+                        isOpen={this.state.isOpen}
+                        onToggleOpen={this.onToggleOpen}
+                        closeWindows={this.closeWindows}
+                        filterQuery={this.state.query}/>
                 </main>
             </div>
         );

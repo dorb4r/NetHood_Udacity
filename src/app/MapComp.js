@@ -3,6 +3,7 @@
 import React from "react"
 import {compose, withProps} from "recompose"
 import {withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react-google-maps"
+import escapeRegExp from "escape-string-regexp";
 
 const lat = 32.1500,
     lng = 34.8839;
@@ -13,7 +14,7 @@ const styles = {
         padding: 0,
 
     }
-}
+};
 
 
 const MapComp = compose(
@@ -35,11 +36,20 @@ const MapComp = compose(
             url: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
             scaledSize: new google.maps.Size(42, 43)
         };
+        const locations = props.markers;
+        let showingLocations;
+
+        if (props.filterQuery) {
+            const match = new RegExp(escapeRegExp(props.filterQuery), 'i');
+            showingLocations = locations.filter((location) => match.test(location.venue.name));
+        } else {
+            showingLocations = locations;
+        }
         return (
             <GoogleMap styles={styles.mapContainer}
                        defaultZoom={11}
                        defaultCenter={{lat: lat, lng: lng}}>
-                {props.markers.map((marker) => {
+                {showingLocations.map((marker) => {
                         return (
                             <Marker defaultIcon={markerPin}
                                     key={marker.venue.id}
@@ -48,12 +58,17 @@ const MapComp = compose(
                                 {props.isOpen[marker.venue.id] && (
                                     <InfoWindow onCloseClick={() => props.closeWindows(marker.venue.id)}>
                                         <div>
-                                            <p>{marker.venue.name}</p>
+                                            <h3>
+                                                {marker.venue.name}
+                                            </h3>
+                                            <p>
+                                                Category: <strong>{marker.venue.categories[0].name}</strong>
+                                            </p>
                                             {marker.venue.photos.count > 0 && (
-                                                <img src={marker.venue.photos.groups[0]}></img>
+                                                <img src={marker.venue.photos.groups[0]} />
                                             )}
                                         </div>
-                                        
+
                                     </InfoWindow>)}
                             </Marker>
                         )
@@ -80,23 +95,23 @@ class MyFancyComponent extends React.PureComponent {
                 isMarkerShown: true
             })
         }, 10)
-    }
+    };
 
     handleMarkerClick = (id) => {
-        const isOpen = this.state.isOpen
-        isOpen[id] = true
-        this.setState({ isMarkerShown: false, isOpen: isOpen })
-        this.props.onToggleOpen(id)
+        const isOpen = this.state.isOpen;
+        isOpen[id] = true;
+        this.setState({isMarkerShown: false, isOpen: isOpen});
+        this.props.onToggleOpen(id);
         this.delayedShowMarker()
-    }
+    };
 
     handleInfoWindowClose = (id) => {
-        
+
         const isOpen = this.state.isOpen;
-        delete isOpen[id]
-        this.setState({isOpen})
+        delete isOpen[id];
+        this.setState({isOpen});
         this.props.closeWindows(id)
-    }
+    };
 
     render() {
         return (<MapComp isMarkerShown={this.state.isMarkerShown}
@@ -105,6 +120,7 @@ class MyFancyComponent extends React.PureComponent {
                          isOpen={this.state.isOpen}
                          onToggleOpen={this.props.onToggleOpen}
                          closeWindows={this.handleInfoWindowClose}
+                         filterQuery={this.props.filterQuery}
             />
         )
     }
