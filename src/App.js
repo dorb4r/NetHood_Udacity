@@ -7,7 +7,7 @@ import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import {Button, Input, MenuItem, List, Hidden} from '@material-ui/core';
+import {Button, Input, MenuItem, List, Hidden, Snackbar} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -223,6 +223,33 @@ class Home extends Component {
                         filterQuery={this.state.query}/>
                     </div>
                 </main>
+                <Snackbar
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  open={this.state.open}
+                  autoHideDuration={6000}
+                  onClose={this.handleClose}
+                  ContentProps={{
+                    'aria-describedby': 'message-id',
+                  }}
+                  message={<span id="message-id">Note archived</span>}
+                  action={[
+                    <Button key="undo" color="secondary" size="small" onClick={this.handleClose}>
+                      UNDO
+                    </Button>,
+                    <IconButton
+                      key="close"
+                      aria-label="Close"
+                      color="inherit"
+                      className={classes.close}
+                      onClick={this.handleClose}
+                    >
+                      <CloseIcon />
+                    </IconButton>,
+                  ]}
+                />
             </div>
         );
     }
