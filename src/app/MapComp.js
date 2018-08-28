@@ -56,7 +56,8 @@ const MapComp = compose(
                             <Marker defaultIcon={markerPin}
                                     key={marker.venue.id}
                                     position={{lat: marker.venue.location.lat, lng: marker.venue.location.lng}}
-                                    onClick={() => props.onToggleOpen(marker.venue.id)}>
+                                    onClick={() => props.onToggleOpen(marker.venue.id)}
+                                    animation={isOpen === marker.venue.id && google.maps.Animation.BOUNCE}>
                                 {isOpen === marker.venue.id && (
                                     <InfoWindow onCloseClick={props.closeWindows}>
                                         <div>
