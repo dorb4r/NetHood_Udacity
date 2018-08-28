@@ -8,13 +8,13 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import {Button, Input} from '@material-ui/core';
+import {Button, Input, Menu, MenuItem, List, ListItem} from '@material-ui/core';
 
 import MapComp from './app/MapComp';
 import MyFancyComponent from './app/MapComp';
 
 
-const drawerWidth = 240,
+const drawerWidth = 340,
     API_KEY = "AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI";
 
 const styles = theme => ({
@@ -48,13 +48,14 @@ const styles = theme => ({
     toolbar: theme.mixins.toolbar,
 });
 
-class ClippedDrawer extends Component {
+class Home extends Component {
     constructor() {
         super();
         this.state = {
-            locations: [],
-            query: "",
-            isOpen: {}
+          isMarkerShown: true,
+          locations: [],
+          query: "",
+          isOpen: {}
         }
 
         this.onToggleOpen = this.onToggleOpen.bind(this);
@@ -67,10 +68,12 @@ class ClippedDrawer extends Component {
 
     searchLocations(query) {
         if (query !== "")
-            fetch(`https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000`)
+            fetch(`https://api.foursquare.com/v2/venues/explore?client_id=D3TYG0N52G2CCG15S0W1KVOSFTL13PFSBNTNSWYQWHEB03U1&client_secret=ZAUNBOXE2CKX0KJ1FT5XBF55ENZ4YA2WTDPZE2W2P3ZQBBT5&v=20180323&limit=1000&ll=32.1500,34.8839&query=${query}`)
+            // https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000
                 .then((res) => res.json())
                 .then((data) => {
-                    this.setState({locations: data.results})
+                  console.log(data.response.groups[0].items)
+                  this.setState({locations: data.response.groups[0].items})  
                 })
                 .catch((err) => {
                         console.log(err);
@@ -86,9 +89,10 @@ class ClippedDrawer extends Component {
         this.setState({isOpen});
     };
 
-    closeWindows = () => {
-        console.log("Close ALL!")
-        // this.setState({ isOpen: {}})
+    closeWindows = (id) => {
+      const isOpen = this.state.isOpen;
+      delete isOpen[id]
+      this.setState({isOpen});
     };
 
 
@@ -110,8 +114,6 @@ class ClippedDrawer extends Component {
             showingLocations = locations;
         }
 
-        // console.log(showingLocations)
-
         return (
             <div className={classes.root}>
                 <AppBar position="absolute" className={classes.appBar}>
@@ -131,24 +133,32 @@ class ClippedDrawer extends Component {
                         </form>
                     </Toolbar>
                 </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
+                <Drawer variant="permanent"
+                        classes={{paper: classes.drawerPaper,}}>
                     <div className={classes.toolbar}/>
                     <Input type="text"
                            onChange={(value) => this.filterLocations(value.target.value)}/>
                     <Divider/>
-                    {showingLocations.filter((location) => location.type === "POI").map((location) =>
-                        (<Button key={location.id}>{location.poi.name}</Button>)
+                    <List>
+                    {showingLocations
+                      .map((location) => (
+                          <MenuItem key={location.venue.id} 
+                                    selected={this.state.isOpen[location.venue.id]}
+                                    style={{whiteSpace: 'normal', textAlign: "center"}}>
+                            <Button className={classes.flex}>
+                              <Typography variant="button">
+                                {location.venue.name}
+                              </Typography>
+                            </Button>
+                          </MenuItem>
+                        )
                     )}
+                    </List>
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
-                    <MyFancyComponent apiKey={API_KEY}
-                             isMarkerShown={true}
+                    <MyFancyComponent 
+                             isMarkerShown={this.state.isMarkerShown}
                              markers={this.state.locations}
                              isOpen={this.state.isOpen}
                              onToggleOpen={this.onToggleOpen}
@@ -159,8 +169,8 @@ class ClippedDrawer extends Component {
     }
 }
 
-ClippedDrawer.propTypes = {
+Home.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ClippedDrawer);
+export default withStyles(styles)(Home);
