@@ -6,7 +6,7 @@ import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+  import Typography from '@material-ui/core/Typography';
 import {Button, Input, MenuItem, List} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
@@ -44,12 +44,21 @@ const styles = theme => ({
         flexGrow: 1,
     },
     locationList: {
-        overflowY: "scroll"
-
+      overflowY: "scroll"
     },
     filterInput: {
         height: "35px",
-        lineHeight: "2"
+        lineHeight: "2",
+        marginTop: "15px"
+    },
+    locationForm: {
+      color: "#000",
+      background: "rgba(255,255,255, 0.3)",
+      borderRadius: "10px",
+      padding: "2px 10px",
+    },
+    input: {
+      color: "#eee"
     },
     toolbar: theme.mixins.toolbar,
 });
@@ -122,15 +131,15 @@ class Home extends Component {
                         <Typography variant="title" color="inherit" noWrap className={classes.flex}>
                             NetHood
                         </Typography>
-                        <form onSubmit={(e) => {
-                            e.preventDefault();
-                            this.searchLocations(e.target.querySelector("#searchLocations").value)
-                        }}>
+                        <form className={classes.locationForm}
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                this.searchLocations(e.target.querySelector("#searchLocations").value)}}>
                             <Typography variant="subheading" color="inherit">
                                 <label>Load other locations:</label>
                             </Typography>
-                            <Input type="text" id="searchLocations"/>
-                            <Input type="submit" color="inherit" value="load"/>
+                            <Input className={classes.input} type="text" id="searchLocations" color="#fff"/>
+                            <Input type="submit" value="load"/>
                         </form>
                     </Toolbar>
                 </AppBar>
