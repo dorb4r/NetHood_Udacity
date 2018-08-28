@@ -37,6 +37,8 @@ const MapComp = compose(
             scaledSize: new google.maps.Size(42, 43)
         };
         const locations = props.markers;
+        
+        const { isOpen } = props;
         let showingLocations;
 
         if (props.filterQuery) {
@@ -54,12 +56,12 @@ const MapComp = compose(
                             <Marker defaultIcon={markerPin}
                                     key={marker.venue.id}
                                     position={{lat: marker.venue.location.lat, lng: marker.venue.location.lng}}
-                                    onClick={() => props.onMarkerClick(marker.venue.id)}>
-                                {props.isOpen[marker.venue.id] && (
-                                    <InfoWindow onCloseClick={() => props.closeWindows(marker.venue.id)}>
+                                    onClick={() => props.onToggleOpen(marker.venue.id)}>
+                                {isOpen === marker.venue.id && (
+                                    <InfoWindow onCloseClick={props.closeWindows}>
                                         <div>
                                             <h3>
-                                                {marker.venue.name}
+                                                <strong><u>{marker.venue.name}</u></strong>
                                             </h3>
                                             <p>
                                                 Category: <strong>{marker.venue.categories[0].name}</strong>
@@ -67,8 +69,9 @@ const MapComp = compose(
                                             {marker.venue.photos.count > 0 && (
                                                 <img src={marker.venue.photos.groups[0].url} alt={marker.venue.photos.groups[0].alt}/>
                                             )}
+                                            <br />
+                                            <p>Location information powered by <strong>Foursquare</strong></p>
                                         </div>
-
                                     </InfoWindow>)}
                             </Marker>
                         )

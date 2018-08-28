@@ -7,17 +7,13 @@ import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import {Button, Input, MenuItem, List} from '@material-ui/core';
-import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from '@material-ui/core/TextField';
 
-import MapComp from './app/MapComp';
 import MyFancyComponent from './app/MapComp';
 
 
-const drawerWidth = 340,
-    API_KEY = "AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI";
+const drawerWidth = 340
 
 const styles = theme => ({
     root: {
@@ -65,7 +61,7 @@ class Home extends Component {
             isMarkerShown: true,
             locations: [],
             query: "",
-            isOpen: {}
+            isOpen: ""
         };
 
         this.onToggleOpen = this.onToggleOpen.bind(this);
@@ -94,19 +90,11 @@ class Home extends Component {
     }
 
     onToggleOpen = (id) => {
-        const isOpen = this.state.isOpen;
-        isOpen[id] = true;
-        this.setState({isOpen});
+      this.setState({isOpen: id});
     };
 
-    closeWindows = (id) => {
-        const isOpen = this.state.isOpen;
-        delete isOpen[id];
-        this.setState({isOpen});
-    };
-
-    handlerLocationListItemClick = (id) => {
-        this.onToggleOpen(id);
+    closeWindows = () => {
+        this.setState({isOpen: ""});
     };
 
     componentDidMount() {
@@ -160,7 +148,7 @@ class Home extends Component {
                                               selected={this.state.isOpen[location.venue.id]}
                                               style={{whiteSpace: 'normal', textAlign: "center"}}>
                                         <Button className={classes.flex}
-                                                onClick={() => this.handlerLocationListItemClick(location.venue.id)}>
+                                                onClick={() => this.onToggleOpen(location.venue.id)}>
                                             <Typography variant="button">
                                                 {location.venue.name}
                                             </Typography>
