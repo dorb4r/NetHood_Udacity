@@ -8,7 +8,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import {Button, Input, Menu, MenuItem, List, ListItem} from '@material-ui/core';
+import {Button, Input, MenuItem, List} from '@material-ui/core';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import TextField from '@material-ui/core/TextField';
 
 import MapComp from './app/MapComp';
 import MyFancyComponent from './app/MapComp';
@@ -48,6 +50,10 @@ const styles = theme => ({
     locationList: {
         overflowY: "scroll"
 
+    },
+    filterInput: {
+        height: "35px",
+        lineHeight: "2"
     },
     toolbar: theme.mixins.toolbar,
 });
@@ -140,9 +146,10 @@ class Home extends Component {
                 <Drawer variant="permanent"
                         classes={{paper: classes.drawerPaper,}}>
                     <div className={classes.toolbar}/>
-                    <Input type="text"
-                           onChange={(value) => this.filterLocations(value.target.value)}/>
-                    <Divider/>
+                    <TextField
+                           onChange={(value) => this.filterLocations(value.target.value)}
+                           className={classes.filterInput}
+                           placeholder="Filter Locations"/>
                     <List className={classes.locationList}>
                         {showingLocations
                             .map((location) => (
