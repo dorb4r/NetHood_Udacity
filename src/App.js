@@ -88,9 +88,6 @@ class Home extends Component {
             alertMassage: "",
             alertMassageOpen: false
         };
-
-        this.onToggleOpen = this.onToggleOpen.bind(this);
-        this.closeWindows = this.closeWindows.bind(this);
     }
 
     filterLocations(query) {
@@ -105,9 +102,10 @@ class Home extends Component {
                     this.setState({locations: data.response.groups[0].items})
                 })
                 .catch((err) => {
+                        console.log(err);
                         this.setState({
                             locations: [],
-                            alertMassage: "There is a connection problem to the location service.",
+                            alertMassage: "There is a connection problem to the location service. Reefer to console for detailed error message",
                             alertMassageOpen: true})
                     }
                 );
@@ -148,6 +146,8 @@ class Home extends Component {
             showingLocations = locations;
         }
 
+
+        // For reuse of the list in the drawer form, for responsive manners
         const drawer = (
           <List className={classes.locationList}>
               {showingLocations
@@ -166,6 +166,7 @@ class Home extends Component {
                   )}
           </List>);
 
+            // For reuse of the load locations form, for responsive manners
           const loadLocations = (
             <form className={classes.locationForm}
                   onSubmit={(e) => {

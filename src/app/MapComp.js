@@ -10,7 +10,6 @@ const lat = 32.1500,
 
 const styles = {
     mapContainer: {
-        // height: "calc(100% - 64px)",
         padding: 0,
     }
 };
@@ -35,16 +34,16 @@ const MapComp = compose(
             url: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
             scaledSize: new google.maps.Size(42, 43)
         };
-        const locations = props.markers;
-        
-        const { isOpen } = props;
+
+        // Filter the location results
+        const { isOpen, markers } = props;
         let showingLocations;
 
         if (props.filterQuery) {
             const match = new RegExp(escapeRegExp(props.filterQuery), 'i');
-            showingLocations = locations.filter((location) => match.test(location.venue.name));
+            showingLocations = markers.filter((location) => match.test(location.venue.name));
         } else {
-            showingLocations = locations;
+            showingLocations = markers;
         }
         return (
             <GoogleMap styles={styles.mapContainer}
@@ -84,45 +83,15 @@ const MapComp = compose(
 
 class MyFancyComponent extends React.PureComponent {
     state = {
-        isMarkerShown: false,
-        isOpen: this.props.isOpen
-    };
-
-    componentDidMount() {
-        this.delayedShowMarker()
-    }
-
-    delayedShowMarker = () => {
-        setTimeout(() => {
-            this.setState({
-                isMarkerShown: true
-            })
-        }, 10)
-    };
-
-    handleMarkerClick = (id) => {
-        const isOpen = this.state.isOpen;
-        isOpen[id] = true;
-        this.setState({isMarkerShown: false});
-        this.props.onToggleOpen(id);
-        this.delayedShowMarker()
-    };
-
-    handleInfoWindowClose = (id) => {
-
-        const isOpen = this.state.isOpen;
-        delete isOpen[id];
-        this.setState({isOpen});
-        this.props.closeWindows(id)
+        isMarkerShown: false
     };
 
     render() {
         return (<MapComp isMarkerShown={this.state.isMarkerShown}
-                         onMarkerClick={this.handleMarkerClick}
                          markers={this.props.markers}
                          isOpen={this.props.isOpen}
                          onToggleOpen={this.props.onToggleOpen}
-                         closeWindows={this.handleInfoWindowClose}
+                         closeWindows={this.closeWindows}
                          filterQuery={this.props.filterQuery}
             />
         )
