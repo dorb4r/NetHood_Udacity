@@ -102,12 +102,13 @@ class Home extends Component {
             fetch(`https://api.foursquare.com/v2/venues/explore?client_id=D3TYG0N52G2CCG15S0W1KVOSFTL13PFSBNTNSWYQWHEB03U1&client_secret=ZAUNBOXE2CKX0KJ1FT5XBF55ENZ4YA2WTDPZE2W2P3ZQBBT5&v=20180323&limit=1000&ll=32.1500,34.8839&query=${query}`)
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data.response.groups[0].items);
                     this.setState({locations: data.response.groups[0].items})
                 })
                 .catch((err) => {
-                        console.log(err);
-                        this.setState({locations: [], alertMassage: "There is a connection problem to the location service.", alertMassageOpen: true})
+                        this.setState({
+                            locations: [],
+                            alertMassage: "There is a connection problem to the location service.",
+                            alertMassageOpen: true})
                     }
                 );
         else this.setState({locations: []})
