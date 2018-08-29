@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close'
 
-import MyFancyComponent from './app/MapComp';
+import Map from './app/MapComp';
 
 
 const drawerWidth = 300;
@@ -208,7 +208,8 @@ class Home extends Component {
                   <TextField
                     onChange={(value) => this.filterLocations(value.target.value)}
                     className={classes.filterInput}
-                    placeholder="Filter Locations"/>
+                    placeholder="Filter Locations"
+                    aria-label="filter location list"/>
                     {drawer}
                 </Drawer>
                 </Hidden>
@@ -225,14 +226,15 @@ class Home extends Component {
                   <TextField
                     onChange={(value) => this.filterLocations(value.target.value)}
                     className={classes.filterInput}
-                    placeholder="Filter Locations"/>
+                    placeholder="Filter Locations"
+                    aria-label="filter location list"/>
                     {drawer}
                 </Drawer>
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
                     <div style={{height: "100%", width: "100%"}}>
-                    <MyFancyComponent
+                    <Map
                         isMarkerShown={this.state.isMarkerShown}
                         markers={this.state.locations}
                         isOpen={this.state.isOpen}

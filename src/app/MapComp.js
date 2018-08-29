@@ -14,6 +14,10 @@ const styles = {
     }
 };
 
+function gm_authFailure() { 
+    /* Code */ 
+};
+
 
 const MapComp = compose(
     withProps({
@@ -81,7 +85,7 @@ const MapComp = compose(
     }
 );
 
-class MyFancyComponent extends React.PureComponent {
+class Map extends React.PureComponent {
     state = {
         isMarkerShown: false
     };
@@ -100,4 +104,4 @@ class MyFancyComponent extends React.PureComponent {
 
 
 // export default MapComp
-export default MyFancyComponent
+export default Map
