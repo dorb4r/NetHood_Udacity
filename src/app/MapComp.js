@@ -1,6 +1,4 @@
 /*global google*/
-/*global gm_authFailure*/
-
 
 import React from "react"
 import {compose, withProps} from "recompose"
@@ -8,7 +6,7 @@ import {withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow} from "react-
 import escapeRegExp from "escape-string-regexp";
 
 const lat = 32.1500,
-    lng = 34.8839;
+      lng = 34.8839;
 
 const styles = {
     mapContainer: {
@@ -17,10 +15,8 @@ const styles = {
 };
 
 
-
 const MapComp = compose(
     withProps({
-        // googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI&v=3.exp&libraries=geometry,drawing,places",
         loadingElement: <div style={{
             height: `100%`
         }}/>,
@@ -89,22 +85,22 @@ class Map extends React.Component {
         isMarkerShown: false
     };
 
+    componentDidCatch(error, info) {
+        console.log(error);
+        this.props.riseAlert("Could not load the Google Maps API. Try again later.")
+      }
+
     render() {
-        if (this.props.googleMapAvailable){
-            return ( <MapComp isMarkerShown={this.state.isMarkerShown}
+            return ( 
+            <MapComp isMarkerShown={this.state.isMarkerShown}
                 markers={this.props.markers}
                 isOpen={this.props.isOpen}
                 onToggleOpen={this.props.onToggleOpen}
                 closeWindows={this.props.closeWindows}
                 filterQuery={this.props.filterQuery}
                 googleMapURL={this.props.googleMapURL}
-   />
-)
-        }
-        
+   />)   
     }
 }
 
-
-// export default MapComp
 export default Map

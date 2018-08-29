@@ -15,11 +15,6 @@ import CloseIcon from '@material-ui/icons/Close'
 
 import Map from './app/MapComp';
 
-let googleMapAvailable;
-function gm_authFailure() { 
-  googleMapAvailable = false;
-};
-
 
 const drawerWidth = 300;
 
@@ -94,29 +89,10 @@ class Home extends Component {
             alertMassage: "",
             alertMassageOpen: false,
             googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI&v=3.exp&libraries=geometry,drawing,places",
-            googleMapAvailable: googleMapAvailable,
+            
         };
     }
-
-
-    loadGoogleMapsOrNot() {
-      if(this.state.googleMapAvailable) {
-        return (<Map
-          isMarkerShown={this.state.isMarkerShown}
-          markers={this.state.locations}
-          isOpen={this.state.isOpen}
-          onToggleOpen={this.onToggleOpen}
-          closeWindows={this.closeWindows}
-          filterQuery={this.state.query}
-          googleMapURL={this.state.googleMapURL}
-          googleMapAvailable={this.state.googleMapAvailable}
-          />)
-      }else {
-        return (<Typography variant="title">
-        Google Maps service is not available.
-      </Typography>)
-      }
-    }
+    
 
     filterLocations(query) {
         this.setState({query});
@@ -156,31 +132,16 @@ class Home extends Component {
         this.setState({alertMassage: "", alertMassageOpen: false})
     };
 
-    handleGoogleMaps = () => {
-      fetch({
-        url: this.state.googleMapURL,
-        headers: {
-          "Access-Control-Allow-Origin": true
-        }
-      }).then(() => {
-        this.setState({
-          googleMapAvailable: true,
-          alertMassage: "Welcome to NetHood!",
-          alertMassageOpen: true})
-      }).catch((err) => {
-        console.log(err);
-        this.setState({
-          googleMapAvailable: false,
-          alertMassage: "There is a connection problem to the Google Maps. Reefer to console for detailed error message",
-          alertMassageOpen: true})
+    riseAlert = (message) => {
+      this.setState({
+        alertMassage: message,
+        alertMassageOpen: true
       })
     }
 
     componentDidMount() {
       this.searchLocations("sports");
-      this.handleGoogleMaps();
   }
-
 
     render() {
       const {classes} = this.props;
@@ -283,8 +244,16 @@ class Home extends Component {
                 <main className={classes.content}>
                     <div className={classes.toolbar}/>
                     <div style={{height: "100%", width: "100%"}}>
-                    {this.loadGoogleMapsOrNot()}
-                    
+                      <Map
+                        isMarkerShown={this.state.isMarkerShown}
+                        markers={this.state.locations}
+                        isOpen={this.state.isOpen}
+                        onToggleOpen={this.onToggleOpen}
+                        closeWindows={this.closeWindows}
+                        filterQuery={this.state.query}
+                        googleMapURL={this.state.googleMapURL}
+                        riseAlert={this.riseAlert}
+                        />
                     </div>
                 </main>
                 <Snackbar
