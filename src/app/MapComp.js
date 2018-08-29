@@ -1,4 +1,6 @@
 /*global google*/
+/*global gm_authFailure*/
+
 
 import React from "react"
 import {compose, withProps} from "recompose"
@@ -14,14 +16,11 @@ const styles = {
     }
 };
 
-function gm_authFailure() { 
-    /* Code */ 
-};
 
 
 const MapComp = compose(
     withProps({
-        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI&v=3.exp&libraries=geometry,drawing,places",
+        // googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyBUTQfI6CTeTw-g7tJwNbFLTy799wzRNeI&v=3.exp&libraries=geometry,drawing,places",
         loadingElement: <div style={{
             height: `100%`
         }}/>,
@@ -85,20 +84,24 @@ const MapComp = compose(
     }
 );
 
-class Map extends React.PureComponent {
+class Map extends React.Component {
     state = {
         isMarkerShown: false
     };
 
     render() {
-        return (<MapComp isMarkerShown={this.state.isMarkerShown}
-                         markers={this.props.markers}
-                         isOpen={this.props.isOpen}
-                         onToggleOpen={this.props.onToggleOpen}
-                         closeWindows={this.props.closeWindows}
-                         filterQuery={this.props.filterQuery}
-            />
-        )
+        if (this.props.googleMapAvailable){
+            return ( <MapComp isMarkerShown={this.state.isMarkerShown}
+                markers={this.props.markers}
+                isOpen={this.props.isOpen}
+                onToggleOpen={this.props.onToggleOpen}
+                closeWindows={this.props.closeWindows}
+                filterQuery={this.props.filterQuery}
+                googleMapURL={this.props.googleMapURL}
+   />
+)
+        }
+        
     }
 }
 
