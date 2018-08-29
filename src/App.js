@@ -180,7 +180,8 @@ class Home extends Component {
 
         return (
             <div className={classes.root}>
-                <AppBar position="absolute" className={classes.appBar}>
+                <AppBar position="absolute"
+                        className={classes.appBar}>
                     <Toolbar className={classes.appBar}>
                     <IconButton
                       color="inherit"
@@ -190,7 +191,7 @@ class Home extends Component {
                     >
                       <MenuIcon />
                     </IconButton>
-                        <Typography variant="title" color="inherit" noWrap className={classes.flex}>
+                        <Typography role="heading" variant="title" color="inherit" noWrap className={classes.flex}>
                             NetHood
                         </Typography>
                         <Hidden smDown>
