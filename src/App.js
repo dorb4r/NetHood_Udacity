@@ -16,7 +16,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import MyFancyComponent from './app/MapComp';
 
 
-const drawerWidth = 340;
+const drawerWidth = 300;
 
 const styles = theme => ({
     root: {
@@ -247,13 +247,13 @@ class Home extends Component {
                   autoHideDuration={6000}
                   onClose={this.handleAlertMassageClose}
                   ContentProps={{
-                    'aria-describedby': 'message-id',
+                    'aria-describedby': 'alert message',
                   }}
                   message={<span id="message-id">{this.state.alertMassage}</span>}
                   action={[
                     <IconButton
                       key="close"
-                      aria-label="Close"
+                      aria-label="Close Alert"
                       color="inherit"
                       className={classes.close}
                       onClick={this.handleAlertMassageClose}
