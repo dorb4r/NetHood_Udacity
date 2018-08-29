@@ -8,11 +8,25 @@ The app focused on sports events. So if you want to find some friends to play so
 
 ## Installation
 
-Simply run:
+Simply run the Developer Server:
 
-* npm install.
+* npm install - 
 
-* npm start.
+* npm start 
+
+Or build and deploy to a local server by: (Make sure you have yarn installed)
+
+* npm install - Install all dependencies.
+
+* npm build - Create production build.
+
+* yarn global add serve - Register a server to your machine
+
+* serve -s build - Serve the build folder.
+
+## Service Worker 
+
+The service worker is available only in build mode and not in developer mode.
 
 ### Author
 
