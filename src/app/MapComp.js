@@ -91,7 +91,7 @@ class MyFancyComponent extends React.PureComponent {
                          markers={this.props.markers}
                          isOpen={this.props.isOpen}
                          onToggleOpen={this.props.onToggleOpen}
-                         closeWindows={this.closeWindows}
+                         closeWindows={this.props.closeWindows}
                          filterQuery={this.props.filterQuery}
             />
         )
