@@ -11,11 +11,12 @@ import {Button, Input, MenuItem, List, Hidden, Snackbar} from '@material-ui/core
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close'
 
 import MyFancyComponent from './app/MapComp';
 
 
-const drawerWidth = 340
+const drawerWidth = 340;
 
 const styles = theme => ({
     root: {
@@ -63,6 +64,15 @@ const styles = theme => ({
     input: {
       color: "#eee"
     },
+        navIconHide: {
+            [theme.breakpoints.up('md')]: {
+                display: 'none',
+            },
+        },
+    close: {
+        width: theme.spacing.unit * 4,
+        height: theme.spacing.unit * 4,
+    },
     toolbar: theme.mixins.toolbar,
 });
 
@@ -75,6 +85,8 @@ class Home extends Component {
             locations: [],
             query: "",
             isOpen: "",
+            alertMassage: "",
+            alertMassageOpen: false
         };
 
         this.onToggleOpen = this.onToggleOpen.bind(this);
@@ -88,7 +100,6 @@ class Home extends Component {
     searchLocations(query) {
         if (query !== "")
             fetch(`https://api.foursquare.com/v2/venues/explore?client_id=D3TYG0N52G2CCG15S0W1KVOSFTL13PFSBNTNSWYQWHEB03U1&client_secret=ZAUNBOXE2CKX0KJ1FT5XBF55ENZ4YA2WTDPZE2W2P3ZQBBT5&v=20180323&limit=1000&ll=32.1500,34.8839&query=${query}`)
-            // https://api.tomtom.com/search/2/search/${query}.json?key=n9R000qQ4FM75YR9xfDlaiywPO8oSCm4&lat=32.1500&lon=34.8839&radius=3000
                 .then((res) => res.json())
                 .then((data) => {
                     console.log(data.response.groups[0].items);
@@ -96,7 +107,7 @@ class Home extends Component {
                 })
                 .catch((err) => {
                         console.log(err);
-                        this.setState({locations: []})
+                        this.setState({locations: [], alertMassage: "There is a connection problem to the location service.", alertMassageOpen: true})
                     }
                 );
         else this.setState({locations: []})
@@ -116,6 +127,10 @@ class Home extends Component {
 
     handleDrawerToggle = () => {
       this.setState(state => ({ mobileOpen: !state.mobileOpen }));
+    };
+
+    handleAlertMassageClose = () => {
+        this.setState({alertMassage: "", alertMassageOpen: false})
     };
 
 
@@ -148,7 +163,7 @@ class Home extends Component {
                           </MenuItem>
                       )
                   )}
-          </List>)
+          </List>);
 
           const loadLocations = (
             <form className={classes.locationForm}
@@ -161,7 +176,7 @@ class Home extends Component {
                 <Input className={classes.input} type="text" id="searchLocations" color="#fff"/>
                 <Input type="submit" value="load"/>
             </form>
-          )
+          );
 
         return (
             <div className={classes.root}>
@@ -226,25 +241,22 @@ class Home extends Component {
                 <Snackbar
                   anchorOrigin={{
                     vertical: 'bottom',
-                    horizontal: 'left',
+                    horizontal: 'right',
                   }}
-                  open={this.state.open}
+                  open={this.state.alertMassageOpen}
                   autoHideDuration={6000}
-                  onClose={this.handleClose}
+                  onClose={this.handleAlertMassageClose}
                   ContentProps={{
                     'aria-describedby': 'message-id',
                   }}
-                  message={<span id="message-id">Note archived</span>}
+                  message={<span id="message-id">{this.state.alertMassage}</span>}
                   action={[
-                    <Button key="undo" color="secondary" size="small" onClick={this.handleClose}>
-                      UNDO
-                    </Button>,
                     <IconButton
                       key="close"
                       aria-label="Close"
                       color="inherit"
                       className={classes.close}
-                      onClick={this.handleClose}
+                      onClick={this.handleAlertMassageClose}
                     >
                       <CloseIcon />
                     </IconButton>,
